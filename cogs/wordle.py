@@ -1,6 +1,7 @@
 from discord.ext import commands
 import discord
-from datetime import date
+from datetime import date, timedelta
+import json
 
 import sys
 sys.dont_write_bytecode = True
@@ -13,26 +14,54 @@ class wordle(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.words = words
-        self.d0 = date(2021, 5, 19)
+        self.d0 = date(2021, 6, 19)
     
-    async def get_todays_word():
-        days_since_start = date.today().day - self.d0
-        print(f"Days since epoch: {days_since_start} results in {self.words[days_since_start]}")
-        return self.words[days_since_start]
+    async def get_word(self, days_since_start = date.today()):
+        placement = abs((days_since_start - self.d0).days)
+        today_word = self.words[placement]
+        print(f"Days since epoch: {placement} results in {self.words[placement]}")
+        return today_word
+
 
     @commands.command()
-    async def wordle(self, ctx, guess, ):
-        if guess == "testing":
-            msg = 'Your submission has been counted'
+    async def wordle(self, ctx, guess, line):
+        if guess == await self.get_word():
+            msg = f'{ctx.message.author.mention}\'s submission has been counted'
+            # do stuff
+            await ctx.message.delete()
+            
         else:
             msg = 'You are incorrect'
+            await ctx.message.delete()
+            # don't do nuffin but delete
 
         await ctx.send(msg)
 
+    # @commands.command()
+    # async def wordle_stats(self, ctx, guess, line):
+    #     if guess == await self.get_word():
+    #         msg = f'{ctx.message.author.mention} submission has been counted'
+    #         # do stuff
+    #         await ctx.message.delete()
+    #     else:
+    #         msg = 'You are incorrect'
+    #         # don't do nuffin
+
+    #     await ctx.send(msg)
+
     @commands.command()
     async def wordle_show(self, ctx):
-        msg = f"Today's word is ||{get_todays_word()}||"
+        msg = f"Today's word is ||`{await self.get_word()}`||"
+        await ctx.send(msg)
 
+
+    @commands.command()
+    async def wordle_show_old(self, ctx):
+        msg = ""
+        today = date.today()
+        for i in range(1, 6):
+            d = today - timedelta(days = i)
+            msg += f"On {d}, the word was ||`{await self.get_word(d)}`||\n"
         await ctx.send(msg)
 
 def setup(bot):
