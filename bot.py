@@ -55,7 +55,8 @@ async def on_message(message):
         if security:
             await message.channel.send(f'{message.author.mention}, your score of `{score}` has been recorded. To see your overall wordle statistics, use `$wordle_stats`')
     
-    
+    # on_message actually overwrites the sending of the message to the command processor. 
+    # So this line is necessary
     await bot.process_commands(message)
 
     
