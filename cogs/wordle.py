@@ -3,6 +3,8 @@ import discord
 from datetime import date, timedelta
 import json
 
+import math
+
 import sys
 sys.dont_write_bytecode = True
 
@@ -15,8 +17,11 @@ class wordle(commands.Cog):
         self.bot = bot
         self.words = words
         self.d0 = date(2021, 6, 19)
+        self.db = {}
     
-    async def get_word(self, days_since_start = date.today()):
+    async def get_word(self, days_since_start = None): # Needs to be none because otherwise, the variable is assigned at initialization rather than run time
+        if not days_since_start:
+            days_since_start = date.today()
         placement = abs((days_since_start - self.d0).days)
         today_word = self.words[placement]
         print(f"Days since epoch: {placement} results in {self.words[placement]}")
@@ -37,17 +42,33 @@ class wordle(commands.Cog):
 
         await ctx.send(msg)
 
-    # @commands.command()
-    # async def wordle_stats(self, ctx, guess, line):
-    #     if guess == await self.get_word():
-    #         msg = f'{ctx.message.author.mention} submission has been counted'
-    #         # do stuff
-    #         await ctx.message.delete()
-    #     else:
-    #         msg = 'You are incorrect'
-    #         # don't do nuffin
+    async def pull_DB(self):
+        with open("cogs/wordle_DB/db.json", "r") as f:
+            try:
+                self.db = json.load(f)
+            except Exception as e:
+                print(f"Database failed to load: {e}")
+                self.db = {}
 
-    #     await ctx.send(msg)
+    @commands.command()
+    async def wordle_stats(self, ctx):
+        await self.pull_DB()
+        author = ctx.message.author.name + f"#{ctx.message.author.discriminator}"
+        stats = self.db[author]
+        total_score = sum( [ int(i) for i in stats.values() ] )
+        msg = "Your Stats:\n"
+        for i in range(1,8):
+            count = list(stats.values()).count(str(i))
+            msg += f"You scored {i}, { math.trunc( (count / len(stats) ) * 100)}% ({count} times)\n"
+
+        msg += f"Total Score (Lower is Better): {total_score}"
+
+        await ctx.send(msg)
+
+    @commands.command()
+    async def wordle_leaderboard(self, ctx):
+        msg = "This is the leaderboard message"
+        await ctx.send(msg)
 
     @commands.command()
     async def wordle_show(self, ctx):

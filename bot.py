@@ -36,7 +36,7 @@ async def add_to_db(user, day, score, message):
     user_scores[day] = score
     score_db[user] = user_scores
     with open("cogs/wordle_DB/db.json", "w") as f:
-        json.dump(score_db, f)
+        json.dump(score_db, f, indent = 4)
     return True
 
 @bot.event
@@ -49,7 +49,7 @@ async def on_message(message):
     if words[0] == "Wordle" and message.channel.name == "wurdle":
         day = words[1]
 
-        score = words[2].split("/")[0] if words[2].split("/")[0] != "X" else 0 # fancy
+        score = words[2].split("/")[0] if words[2].split("/")[0] != "X" else 7 # fancy
 
         security = await add_to_db(message.author.name + f"#{message.author.discriminator}", day, score, message)
         if security:
