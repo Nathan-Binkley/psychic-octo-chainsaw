@@ -1,5 +1,6 @@
 # Custom folders
 keys.py
+*.json
 
 
 # Byte-compiled / optimized / DLL files
