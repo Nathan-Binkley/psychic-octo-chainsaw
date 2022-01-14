@@ -29,9 +29,9 @@ class fun(commands.Cog):
     @commands.command()
     async def insult(self, ctx, user = None):
         if not user:
-            msg = self.insults[random.randInt(len(self.insults))]
+            msg = self.insults[random.randint(0,len(self.insults))]
         else:
-            msg = f"Hey {user}! {self.insults[random.randInt(len(self.insults))]}" #I don't know how well this will work either lol
+            msg = f"Hey {user}! {self.insults[random.randint(0, len(self.insults))]}" #I don't know how well this will work either lol
         await ctx.send(msg)
 
     

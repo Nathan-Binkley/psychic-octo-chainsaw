@@ -46,15 +46,18 @@ async def on_ready():
 @bot.event
 async def on_message(message): 
     words = message.content.split()
-    if words[0] == "Wordle" and message.channel.name == "wurdle":
-        day = words[1]
+    if len(words) >= 3:
+        try:
+            if words[0] == "Wordle" and message.channel.name == "wurdle" and int(words[1]):
+                day = words[1]
 
-        score = words[2].split("/")[0] if words[2].split("/")[0] != "X" else 7 # fancy
+                score = words[2].split("/")[0] if words[2].split("/")[0] != "X" else 7 # fancy
 
-        security = await add_to_db(message.author.name + f"#{message.author.discriminator}", day, score, message)
-        if security:
-            await message.channel.send(f'{message.author.mention}, your score of `{score}` has been recorded. To see your overall wordle statistics, use `$wordle_stats`')
-    
+                security = await add_to_db(message.author.name + f"#{message.author.discriminator}", day, score, message)
+                if security:
+                    await message.channel.send(f'{message.author.mention}, your score of `{score}` has been recorded. To see your overall wordle statistics, use `$wordle_stats`')
+        except Exception as e:
+            print("Wordle processing error",e)
     # on_message actually overwrites the sending of the message to the command processor. 
     # So this line is necessary
     await bot.process_commands(message)
