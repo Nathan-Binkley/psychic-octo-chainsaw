@@ -4,8 +4,23 @@ import keys
 import os
 import json
 
-bot = commands.Bot(command_prefix=keys.PREFIX)
+# On load, load in prefixes of all servers
+with open("settings.json", "r") as f:
+        settings = json.load(f)
 
+        
+def prefix_getter(bot, message):
+    with open("settings.json", "r") as f:
+        settings = json.load(f)
+
+    id = message.guild.id
+
+    return settings[str(id)]["prefix"]
+
+
+bot = commands.Bot(command_prefix=prefix_getter)
+
+# --------------------------------
 
 # Load in word DB
 with open("cogs/wordle_DB/db.json", "r") as f:
@@ -16,6 +31,8 @@ with open("cogs/wordle_DB/db.json", "r") as f:
         score_db = {}
     print("Database Loaded")
 
+#---------------------------------
+
 # Loads cogs in automatically
 for filename in os.listdir('./cogs'): 
     if filename.endswith('.py'):
@@ -24,11 +41,12 @@ for filename in os.listdir('./cogs'):
         except Exception as e:
             print(e)
 
+# Wordle DB stuff -- Need to find a way to move this over to the wordle cog, but I can't think of way without imports but that's not how it should work, right?
 async def add_to_db(user, day, score, message):
     user_scores = score_db.get(user, {})
 
     day_score = user_scores.get(day, None)
-    
+
     if day_score:
         await message.channel.send(f"{message.author.mention} tried to cheat!")
         return False
@@ -39,10 +57,32 @@ async def add_to_db(user, day, score, message):
         json.dump(score_db, f, indent = 4)
     return True
 
+# ------
+
+# Display status message, confirming it is active
 @bot.event
 async def on_ready():
+    for server in bot.guilds:
+        print(f"Currently connected to: {server.id} | {server.name} | Prefix: {settings[str(server.id)]['prefix']}")
+        if str(server.id) not in settings:
+            settings[server.id] = {}
+            settings[server.id]["prefix"] = keys.PREFIX # SET DEFAULT PREFIX IF NOT IN DB
+    with open("settings.json", "w") as f:
+        json.dump(settings, f, indent=4)
     print(f'We have logged in as {bot.user}. All systems are operational')
+#------------------
 
+# Handle joining a server, set default prefix
+@bot.event
+async def on_guild_join(self, guild):
+    with open("settings.json", "r") as f:
+        settings = json.load(f)
+    settings[guild.id] = {}
+    settings[guild.id]["prefix"] = keys.PREFIX
+    with open("settings.json", "w") as f:
+        json.dump(settings, f, indent=4)
+
+#Handle specific non-command messages
 @bot.event
 async def on_message(message): 
     words = message.content.split()
