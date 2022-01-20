@@ -35,7 +35,7 @@ class fun(commands.Cog):
     async def insult(self, ctx, *target):
         target = list(target)    
         target = " ".join(target)
-        
+
         if not target:
             msg = self.insults[random.randint(0,len(self.insults))]
         else:
@@ -44,6 +44,7 @@ class fun(commands.Cog):
 
     @commands.command()
     async def gif(self, ctx):
+        # Load a json object from the string returned by the URL.
         req = json.loads(requests.get("http://api.giphy.com/v1/gifs/random", params = { "api_key": self.giphy_key } ).text)
         gif = req["data"]["embed_url"]
         msg = f"{gif}"

@@ -66,7 +66,7 @@ async def on_ready():
         print(f"Currently connected to: {server.id} | {server.name} | Prefix: {settings[str(server.id)]['prefix']}")
         if str(server.id) not in settings:
             settings[server.id] = {}
-            settings[server.id]["prefix"] = keys.PREFIX # SET DEFAULT PREFIX IF NOT IN DB
+            settings[server.id]["prefix"] = keys.DEFAULT_PREFIX # SET DEFAULT PREFIX IF NOT IN DB
     with open("settings.json", "w") as f:
         json.dump(settings, f, indent=4)
     print(f'We have logged in as {bot.user}. All systems are operational')
@@ -78,7 +78,7 @@ async def on_guild_join(self, guild):
     with open("settings.json", "r") as f:
         settings = json.load(f)
     settings[guild.id] = {}
-    settings[guild.id]["prefix"] = keys.PREFIX
+    settings[guild.id]["prefix"] = keys.DEFAULT_PREFIX
     with open("settings.json", "w") as f:
         json.dump(settings, f, indent=4)
 

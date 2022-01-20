@@ -1,1 +1,3 @@
-DISCORD_TOKEN = "" # Replace with your discord bot token 
+DISCORD_TOKEN = "" # Replace with your discord bot token
+DEFAULT_PREFIX = "$" # Default prefix for creation in DB on new servers
+GIPHY_API = "" # Giphy API key. Keep secret, do not push.
