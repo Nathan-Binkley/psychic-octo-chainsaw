@@ -1,3 +1,4 @@
+from typing import List
 from discord.ext import commands
 import discord
 import random
@@ -31,11 +32,14 @@ class fun(commands.Cog):
             return f.read().splitlines() #I don't know if this will work lmao
 
     @commands.command()
-    async def insult(self, ctx, user = None):
-        if not user:
+    async def insult(self, ctx, *target):
+        target = list(target)    
+        target = " ".join(target)
+        
+        if not target:
             msg = self.insults[random.randint(0,len(self.insults))]
         else:
-            msg = f"Hey {user}! {self.insults[random.randint(0, len(self.insults))]}" #I don't know how well this will work either lol
+            msg = f"Hey {target}! {self.insults[random.randint(0, len(self.insults))]}" #I don't know how well this will work either lol
         await ctx.send(msg)
 
     @commands.command()
