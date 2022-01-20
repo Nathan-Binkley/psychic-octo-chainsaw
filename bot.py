@@ -27,7 +27,7 @@ with open("cogs/wordle_DB/db.json", "r") as f:
     try:
         score_db = json.load(f)
     except Exception as e:
-        print(f"Database failed to load: {e}")
+        print(f"Wordle Database failed to load: {e}")
         score_db = {}
     print("Database Loaded")
 

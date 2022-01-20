@@ -1,6 +1,9 @@
 from discord.ext import commands
 import discord
 import random
+import keys
+import requests
+import json
 
 import sys
 sys.dont_write_bytecode = True
@@ -10,6 +13,7 @@ class fun(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.insults = self.load_insults()
+        self.giphy_key = keys.GIPHY_API
 
     @commands.command()
     async def bubblewrap(self, ctx):
@@ -32,6 +36,13 @@ class fun(commands.Cog):
             msg = self.insults[random.randint(0,len(self.insults))]
         else:
             msg = f"Hey {user}! {self.insults[random.randint(0, len(self.insults))]}" #I don't know how well this will work either lol
+        await ctx.send(msg)
+
+    @commands.command()
+    async def gif(self, ctx):
+        req = json.loads(requests.get("http://api.giphy.com/v1/gifs/random", params = { "api_key": self.giphy_key } ).text)
+        gif = req["data"]["embed_url"]
+        msg = f"{gif}"
         await ctx.send(msg)
 
     
