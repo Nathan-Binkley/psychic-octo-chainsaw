@@ -63,12 +63,14 @@ async def add_to_db(user, day, score, message):
 @bot.event
 async def on_ready():
     for server in bot.guilds:
-        print(f"Currently connected to: {server.id} | {server.name} | Prefix: {settings[str(server.id)]['prefix']}")
         if str(server.id) not in settings:
-            settings[server.id] = {}
-            settings[server.id]["prefix"] = keys.DEFAULT_PREFIX # SET DEFAULT PREFIX IF NOT IN DB
+                settings[server.id] = {}
+                settings[server.id]["prefix"] = keys.DEFAULT_PREFIX # SET DEFAULT PREFIX IF NOT IN DB
     with open("settings.json", "w") as f:
         json.dump(settings, f, indent=4)
+    for server in bot.guilds:
+        print(f"Currently connected to: {server.id} | {server.name} | Prefix: {settings[str(server.id)]['prefix']}")
+        
     print(f'We have logged in as {bot.user}. All systems are operational')
 #------------------
 
