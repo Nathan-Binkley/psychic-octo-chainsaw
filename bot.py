@@ -53,8 +53,10 @@ async def add_to_db(user, day, score, message):
 
     user_scores[day] = score
     score_db[user] = user_scores
+    
     with open("cogs/wordle_DB/db.json", "w") as f:
         json.dump(score_db, f, indent = 4)
+
     return True
 
 # ------
@@ -72,7 +74,7 @@ async def on_ready():
         print(f"Currently connected to: {server.id} | {server.name} | Prefix: {settings[str(server.id)]['prefix']}")
         
     print(f'We have logged in as {bot.user}. All systems are operational')
-    
+
 #------------------
 
 # Handle joining a server, set default prefix
@@ -96,9 +98,11 @@ async def on_message(message):
 
                 score = words[2].split("/")[0] if words[2].split("/")[0] != "X" else "7" # fancy
 
-                security = await add_to_db(message.author.name + f"#{message.author.discriminator}", day, score, message)
+                security = await add_to_db(str(message.author.id), day, score, message)
+
                 if security:
                     await message.channel.send(f'{message.author.mention}, your score of `{score}` has been recorded. To see your overall wordle statistics, use `$wordle_stats`')
+
         except Exception as e:
             print("Wordle processing error",e)
     # on_message actually overwrites the sending of the message to the command processor. 
