@@ -53,7 +53,7 @@ async def add_to_db(user, day, score, message):
 
     user_scores[day] = score
     score_db[user] = user_scores
-    
+
     with open("cogs/wordle_DB/db.json", "w") as f:
         json.dump(score_db, f, indent = 4)
 
@@ -68,8 +68,10 @@ async def on_ready():
         if str(server.id) not in settings:
                 settings[server.id] = {}
                 settings[server.id]["prefix"] = keys.DEFAULT_PREFIX # SET DEFAULT PREFIX IF NOT IN DB
+
     with open("settings.json", "w") as f:
         json.dump(settings, f, indent=4)
+
     for server in bot.guilds:
         print(f"Currently connected to: {server.id} | {server.name} | Prefix: {settings[str(server.id)]['prefix']}")
         
@@ -80,10 +82,13 @@ async def on_ready():
 # Handle joining a server, set default prefix
 @bot.event
 async def on_guild_join(self, guild):
+
     with open("settings.json", "r") as f:
         settings = json.load(f)
+
     settings[guild.id] = {}
     settings[guild.id]["prefix"] = keys.DEFAULT_PREFIX
+
     with open("settings.json", "w") as f:
         json.dump(settings, f, indent=4)
 
@@ -91,7 +96,9 @@ async def on_guild_join(self, guild):
 @bot.event
 async def on_message(message): 
     words = message.content.split()
+
     if len(words) >= 3:
+
         try:
             if words[0] == "Wordle" and message.channel.name == "wurdle" and int(words[1]):
                 day = words[1]
@@ -105,11 +112,11 @@ async def on_message(message):
 
         except Exception as e:
             print("Wordle processing error",e)
+
     # on_message actually overwrites the sending of the message to the command processor. 
     # So this line is necessary
+
     await bot.process_commands(message)
 
     
-
-
 bot.run(keys.DISCORD_TOKEN)
