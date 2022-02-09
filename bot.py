@@ -72,6 +72,7 @@ async def on_ready():
         print(f"Currently connected to: {server.id} | {server.name} | Prefix: {settings[str(server.id)]['prefix']}")
         
     print(f'We have logged in as {bot.user}. All systems are operational')
+    
 #------------------
 
 # Handle joining a server, set default prefix
@@ -93,7 +94,7 @@ async def on_message(message):
             if words[0] == "Wordle" and message.channel.name == "wurdle" and int(words[1]):
                 day = words[1]
 
-                score = words[2].split("/")[0] if words[2].split("/")[0] != "X" else 7 # fancy
+                score = words[2].split("/")[0] if words[2].split("/")[0] != "X" else "7" # fancy
 
                 security = await add_to_db(message.author.name + f"#{message.author.discriminator}", day, score, message)
                 if security:
