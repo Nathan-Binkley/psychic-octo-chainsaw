@@ -15,7 +15,7 @@ class owo(commands.Cog):
     @commands.command()
     async def owo(self, ctx, *arg):
         owod = ""
-        text = ctx.message.content[1:]
+        text = ctx.message.content.split(" ", 1)[1]
         texts = text.split(" ") #Split on spaces
         for i in texts: #for each item in the split list
             i = i.rstrip()  #remove \n characters 
@@ -39,7 +39,7 @@ class owo(commands.Cog):
         if len(owod) < 150: # add custom beginning
             try:
                 helper = random.randint(0,len(self.customBeginnings)-1)
-                owod = self.customBeginnings[helper] + owod
+                owod = self.customBeginnings[helper] + "\n" + owod + "\n"
             except:
                 pass
 
